@@ -3,9 +3,17 @@ module.exports = {
     allowUnknownTags: true,
   },
   source: {
-    include: ['./demo/src', './README.md'],
+    include: ['./fixtures', './README.md'],
   },
   plugins: ['plugins/markdown'],
+  opts: {
+    encoding: 'utf8',
+    destination: 'docs',
+    recurse: true,
+    tutorials: './fixtures/tutorials',
+    template: './',
+  },
+
   markdown: {
     hardwrap: false,
     idInHeadings: true,

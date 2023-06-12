@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const config = {
   output: 'export',
 };
 
-module.exports = nextConfig;
+module.exports = config;
 
