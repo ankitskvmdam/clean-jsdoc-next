@@ -26,8 +26,6 @@ function generateReadmePage(options) {
 
   const pageJsx = getReadmePageJSX(docs[0].data);
 
-  console.log('Dest', docs);
-
   writePageData(dest, filename, pageJsx);
 }
 
