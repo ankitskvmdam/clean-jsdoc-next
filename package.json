@@ -2,7 +2,10 @@
   "name": "clean-jsdoc-next",
   "version": "0.1.0",
   "scripts": {
-    "dev": "nodemon --ignore .clean-jsdoc-next/ --ignore docs/ node_modules/jsdoc/jsdoc.js -c jsdoc.config.js"
+    "dev:jsdoc": "nodemon node_modules/jsdoc/jsdoc.js -c jsdoc.config.js",
+    "dev:frontier": "node ./dev/watch-frontier.js",
+    "dev:next": "node ./dev/next-dev.js",
+    "dev": "concurrently \"npm run dev:frontier\" \"npm run dev:next\" \"npm run dev:jsdoc\""
   },
   "dependencies": {
     "@jsdoc/salty": "^0.2.5",
@@ -33,13 +36,19 @@
   ],
   "devDependencies": {
     "chokidar": "^3.5.3",
+    "concurrently": "^8.2.0",
     "jsdoc": "^4.0.2",
     "nodemon": "^2.0.22"
   },
   "nodemonConfig": {
     "ignore": [
       "docs/*",
-      ".clean-jsdoc-next/*"
+      ".clean-jsdoc-next/*",
+      "frontier/*",
+      "node_modules/*",
+      "**/*.json",
+      "**/*.config.js",
+      "dev/*"
     ]
   }
 }

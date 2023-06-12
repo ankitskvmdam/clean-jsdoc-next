@@ -13,7 +13,15 @@ function removeDir(pathname) {
   try {
     fs.rmSync(pathname, { recursive: true, force: true });
   } catch (error) {
-    console.error('Failed to delete directory', error);
+    console.error(chalk.red('Failed to delete directory'), error);
+  }
+}
+
+function removeFile(pathname) {
+  try {
+    fs.rmSync(pathname);
+  } catch (error) {
+    console.error(chalk.red('Failed to remove file', pathname));
   }
 }
 
@@ -110,7 +118,7 @@ function writeDataIntoFile(dest, data) {
   try {
     fs.writeFileSync(dest, data);
   } catch (error) {
-    console.error(chalk.red('[Error:] Failed to write data at', dest));
+    console.error(chalk.red('[Error:] Failed to write data at', dest, error));
   }
 }
 
@@ -131,6 +139,7 @@ function writePageData(rootDest, url, data) {
 module.exports = {
   createDir,
   copyFile,
+  removeFile,
   copyAllFiles,
   getAbsolutePathOf,
   removeDir,
