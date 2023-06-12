@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "scripts": {
     "dev:jsdoc": "nodemon node_modules/jsdoc/jsdoc.js -c jsdoc.config.js",
-    "dev:frontier": "node ./dev/watch-frontier.js",
-    "dev:next": "node ./dev/next-dev.js",
+    "dev:frontier": "node ./config/dev/watch-frontier.js",
+    "dev:next": "node ./config/dev/next-dev.js",
     "dev": "concurrently \"npm run dev:frontier\" \"npm run dev:next\" \"npm run dev:jsdoc\""
   },
   "dependencies": {
@@ -48,7 +48,7 @@
       "node_modules/*",
       "**/*.json",
       "**/*.config.js",
-      "dev/*"
+      "config/*"
     ]
   }
 }
