@@ -1,9 +1,7 @@
 const fs = require('fs');
 
 const chalk = require('chalk');
-const { taffy } = require('@jsdoc/salty');
 const helper = require('jsdoc/util/templateHelper');
-const logger = require('jsdoc/util/logger');
 const path = require('jsdoc/path');
 const env = require('jsdoc/env');
 
@@ -17,14 +15,22 @@ const {
   needsSignature,
   addSignatureParams,
   addSignatureReturns,
+  getSectionWiseData,
 } = require('./utils/helper');
 const { generate } = require('./generate/generate');
 
 const config = env.conf;
+const cleanConfig = config.clean || config.opts.clean;
 const cleanJSDocNextPath = path.join(env.pwd, '.clean-jsdoc-next');
 let dest = path.resolve(path.normalize(config.opts.destination));
 
+console.log('Clean', cleanConfig);
+
 function publish(_data, opts, tutorials) {
+  /**
+   * If we don't able to find config file then we are returning
+   * after showing proper message
+   */
   if (!config) {
     console.error(
       chalk.red(
@@ -38,6 +44,19 @@ function publish(_data, opts, tutorials) {
       )
     );
     return;
+  }
+
+  if (config.clean && config.opts.clean) {
+    console.warn(
+      chalk.yellow(
+        [
+          '[Warn]:',
+          'We found `clean` key at two places in you config file.',
+          'One at the root of the config file and another one inside',
+          '`opts`. We are using the one that is in the root.',
+        ].join(' ')
+      )
+    );
   }
 
   const templateConfig = env.conf.templates || {};
@@ -88,6 +107,7 @@ function publish(_data, opts, tutorials) {
         };
       });
     }
+
     if (doclet.see) {
       doclet.see.forEach(function (seeItem, i) {
         doclet.see[i] = hashToLink(doclet, seeItem);
@@ -106,7 +126,6 @@ function publish(_data, opts, tutorials) {
       }
     }
 
-    // added by clean-jsdoc-theme-dev.
     // to process yields.
     if (doclet.yields) {
       doclet.yields = getProcessedYield(doclet.yields);
@@ -118,10 +137,11 @@ function publish(_data, opts, tutorials) {
   }
 
   // update dest if necessary, then create dest
-  const packageInfo = (helper.find(data, { kind: 'package' }) || [])[0];
-  if (packageInfo && packageInfo.name) {
-    dest = path.join(dest, packageInfo.name, packageInfo.version || '');
-  }
+  const packageJson = helper.find(data, { kind: 'package' }) || [];
+
+  // if (pakca && pakca.name) {
+  //   dest = path.join(dest, pakca.name, pakca.version || '');
+  // }
 
   // // Directories needed for processing and output
   // const dirs = [cleanJSDocNextPath, dest];
@@ -198,30 +218,16 @@ function publish(_data, opts, tutorials) {
     }
   });
 
+  const files = helper.find(data, { kind: 'file' });
   const members = helper.getMembers(data);
   members.tutorials = tutorials.children;
+
+  // set up the lists that we'll use to generate pages
+  const sections = getSectionWiseData({ members, helper });
 
   const canOutputSourceFiles = Boolean(
     templateConfig.default && templateConfig.default.outputSourceFiles !== false
   );
-
-  const indexFile = [
-    {
-      data: opts.readme,
-    },
-  ];
-
-  generate({
-    pageTitle: 'Homepage',
-    docs: indexFile,
-    type: 'readme',
-    env,
-    helper,
-    dest: cleanJSDocNextPath,
-    filename: indexUrl,
-    canOutputSourceFiles,
-    isNeededToResolveLinks: true,
-  });
 }
 
 module.exports = {

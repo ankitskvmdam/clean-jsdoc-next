@@ -1,5 +1,6 @@
 const path = require('jsdoc/path');
 const showdown = require('showdown');
+const { taffy } = require('@jsdoc/salty');
 
 const mdToHTMLConverter = new showdown.Converter();
 
@@ -221,6 +222,71 @@ function needsSignature({ kind, type, meta }) {
   return needsSig;
 }
 
+/**
+ * Generate section wise data.
+ * @param {*} data
+ */
+function getSectionWiseData(data) {
+  const { members, helper } = data;
+  const classes = taffy(members.classes);
+  const modules = taffy(members.modules);
+  const namespaces = taffy(members.namespaces);
+  const mixins = taffy(members.mixins);
+  const externals = taffy(members.externals);
+  const interfaces = taffy(members.interfaces);
+
+  const classesToGenerate = [];
+  const modulesToGenerate = [];
+  const namespacesToGenerate = [];
+  const mixinsToGenerate = [];
+  const externalsToGenerate = [];
+  const interfacesToGenerate = [];
+
+  Object.keys(helper.longnameToUrl).forEach(async function (longname) {
+    const _class = helper.find(classes, { longname: longname });
+    const _external = helper.find(externals, { longname: longname });
+    const _interface = helper.find(interfaces, { longname: longname });
+    const _mixin = helper.find(mixins, { longname: longname });
+    const _module = helper.find(modules, { longname: longname });
+    const _namespace = helper.find(namespaces, { longname: longname });
+
+    if (_module.length) {
+      modulesToGenerate.push(_module);
+    }
+
+    if (_class.length) {
+      classesToGenerate.push(_class);
+    }
+
+    if (_namespace.length) {
+      namespacesToGenerate.push(_namespace);
+    }
+
+    if (_mixin.length) {
+      mixinsToGenerate.push(_mixin);
+    }
+
+    if (_external.length) {
+      externalsToGenerate(_external);
+    }
+
+    if (_interface.length) {
+      interfacesToGenerate(_interface);
+    }
+  });
+
+  return {
+    classes: classesToGenerate,
+    namespaces: namespacesToGenerate,
+    externals: externalsToGenerate,
+    module: modulesToGenerate,
+    interfaces: interfacesToGenerate,
+    mixins: mixinsToGenerate,
+    globals: members.globals,
+    tutorials: members.tutorials,
+  };
+}
+
 module.exports = {
   getPathFromDoclet,
   hashToLink,
@@ -231,4 +297,5 @@ module.exports = {
   needsSignature,
   addSignatureParams,
   addSignatureReturns,
+  getSectionWiseData,
 };
