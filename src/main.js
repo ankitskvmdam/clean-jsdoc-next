@@ -17,7 +17,7 @@ const {
   addSignatureReturns,
   getSectionWiseData,
 } = require('./utils/helper');
-const { cleanJSDocNextPath } = require('../constants/paths');
+const { copyStaticFiles } = require('./copy');
 const { generate } = require('./generate/generate');
 
 const config = env.conf;
@@ -59,7 +59,10 @@ function publish(_data, opts, tutorials) {
 
   const templateConfig = env.conf.templates || {};
   templateConfig.default = templateConfig.default || {};
-  const themeConfig = config.theme || { mode: 'dark' };
+  const themeConfig = cleanConfig.theme || { mode: 'dark' };
+
+  const staticFiles = templateConfig.default.staticFiles;
+  copyStaticFiles(staticFiles);
 
   // claim some special filenames in advance, so the All-Powerful Overseer of Filename Uniqueness
   // doesn't try to hand them out later
@@ -134,40 +137,6 @@ function publish(_data, opts, tutorials) {
     sourceFiles = shortenPaths(sourceFiles, path.commonPrefix(sourceFilePaths));
   }
 
-  // update dest if necessary, then create dest
-  const packageJson = helper.find(data, { kind: 'package' }) || [];
-
-  // if (pakca && pakca.name) {
-  //   dest = path.join(dest, pakca.name, pakca.version || '');
-  // }
-
-  // // Directories needed for processing and output
-  // const dirs = [cleanJSDocNextPath, dest];
-
-  // // Removing existing directories
-  // // dirs.forEach((dir) => removeDir(dir));
-
-  // // Creating necessary directories
-  // dirs.forEach((dir) => createDir(dir));
-
-  //
-  //
-  //
-  //
-  //
-  // Skipping copying static files and
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-
   data().each(function (doclet) {
     let docletPath;
     const url = helper.createLink(doclet);
@@ -216,7 +185,9 @@ function publish(_data, opts, tutorials) {
     }
   });
 
+  const packageJson = helper.find(data, { kind: 'package' }) || [];
   const files = helper.find(data, { kind: 'file' });
+
   const members = helper.getMembers(data);
   members.tutorials = tutorials.children;
 

@@ -37,7 +37,7 @@ function removeFile(pathname) {
 function createDir(pathname) {
   try {
     if (!fs.existsSync(pathname)) {
-      fs.mkdirSync(pathname);
+      fs.mkdirSync(pathname, { recursive: true });
     }
 
     return true;
@@ -62,6 +62,20 @@ function copyFile(src, dest) {
 }
 
 /**
+ * To check whether the path is directory or a file.
+ *
+ * @param {string} src path of the file
+ * @returns {boolean} True if the path is a directory
+ */
+function isDir(src) {
+  try {
+    return fs.lstatSync(src).isDirectory();
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
  * Copy all the files form source directory to the
  * destination directory
  **Note: src and dest path should be absolute path.
@@ -76,9 +90,7 @@ function copyAllFiles(src, dest) {
     const from = path.join(src, file);
     const to = path.join(dest, basename);
 
-    const stat = fs.lstatSync(from);
-
-    if (stat.isDirectory()) {
+    if (isDir(from)) {
       createDir(to);
       copyAllFiles(from, to);
     } else {
@@ -139,6 +151,7 @@ function writePageData(rootDest, url, data) {
 module.exports = {
   createDir,
   copyFile,
+  isDir,
   removeFile,
   copyAllFiles,
   getAbsolutePathOf,
