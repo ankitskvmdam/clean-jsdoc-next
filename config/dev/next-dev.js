@@ -1,7 +1,8 @@
-const path = require('path');
 const { exec } = require('child_process');
+const { cleanJSDocNextPath } = require('../../constants/paths');
+const { createDir } = require('../../src/utils/file');
 
-const cleanJSDocNextPath = path.join(__dirname, '..', '.clean-jsdoc-next');
+createDir(cleanJSDocNextPath);
 
 process.chdir(cleanJSDocNextPath);
 exec('npm run dev').stdout.pipe(process.stdout);

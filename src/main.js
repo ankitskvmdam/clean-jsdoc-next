@@ -17,14 +17,12 @@ const {
   addSignatureReturns,
   getSectionWiseData,
 } = require('./utils/helper');
+const { cleanJSDocNextPath } = require('../constants/paths');
 const { generate } = require('./generate/generate');
 
 const config = env.conf;
 const cleanConfig = config.clean || config.opts.clean;
-const cleanJSDocNextPath = path.join(env.pwd, '.clean-jsdoc-next');
 let dest = path.resolve(path.normalize(config.opts.destination));
-
-console.log('Clean', cleanConfig);
 
 function publish(_data, opts, tutorials) {
   /**
