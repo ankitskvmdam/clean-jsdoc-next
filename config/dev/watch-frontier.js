@@ -8,19 +8,18 @@ const {
   createDir,
   removeDir,
   removeFile,
-} = require('../src/utils/file');
-
-const dest = path.join('.', '.clean-jsdoc-next');
+} = require('../../src/utils/file');
+const { cleanJSDocNextPath } = require('../../constants/paths');
 
 // removing directory before creating.
-removeDir(dest);
+removeDir(cleanJSDocNextPath);
 
 // Creating directory
-createDir(dest);
+createDir(cleanJSDocNextPath);
 
 chokidar.watch('./frontier/**').on('all', (event, actualPath) => {
   const pathname = actualPath.replace(/frontier/, '');
-  const destPath = path.join(dest, pathname);
+  const destPath = path.join(cleanJSDocNextPath, pathname);
   switch (event) {
     case 'change':
     case 'add':
