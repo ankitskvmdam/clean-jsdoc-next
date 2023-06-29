@@ -1,3 +1,8 @@
-const { publish } = require('./src/main');
+const { publish } = require('./src/publish');
 
-exports.publish = (data, opts, tutorials) => publish(data, opts, tutorials);
+exports.publish = (data, opts, tutorials) => {
+  /**
+   * TODO: Add proper build step.
+   */
+  publish(data, opts, tutorials);
+};

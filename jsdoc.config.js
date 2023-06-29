@@ -11,7 +11,20 @@ module.exports = {
     destination: 'docs',
     recurse: true,
     tutorials: './fixtures/tutorials',
-    template: './',
+    template: './src',
+  },
+
+  clean: {
+    sections: [],
+  },
+
+  templates: {
+    default: {
+      staticFiles: {
+        include: [],
+        toFlattenPath: true,
+      },
+    },
   },
 
   markdown: {
