@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 const chalk = require('chalk');
 const helper = require('jsdoc/util/templateHelper');
 const path = require('jsdoc/path');
@@ -18,7 +16,7 @@ const {
   getSectionWiseData,
 } = require('./utils/helper');
 const { copyStaticFiles } = require('./copy');
-const { generate } = require('./generate/generate');
+const builder = require('./builder');
 
 const config = env.conf;
 const cleanConfig = config.clean || config.opts.clean;
@@ -49,7 +47,7 @@ function publish(_data, opts, tutorials) {
       chalk.yellow(
         [
           '[Warn]:',
-          'We found `clean` key at two places in you config file.',
+          'We found `clean` key more than one place in you config file.',
           'One at the root of the config file and another one inside',
           '`opts`. We are using the one that is in the root.',
         ].join(' ')
@@ -188,15 +186,33 @@ function publish(_data, opts, tutorials) {
   const packageJson = helper.find(data, { kind: 'package' }) || [];
   const files = helper.find(data, { kind: 'file' });
 
+  if (typeof packageJson[0] === 'object' && packageJson[0].name) {
+    dest = path.join(dest, packageJson[0].name, packageJson[0].version || '');
+  }
+
   const members = helper.getMembers(data);
   members.tutorials = tutorials.children;
 
-  // set up the lists that we'll use to generate pages
   const sections = getSectionWiseData({ members, helper });
 
   const canOutputSourceFiles = Boolean(
     templateConfig.default && templateConfig.default.outputSourceFiles !== false
   );
+
+  builder({
+    sections,
+    canOutputSourceFiles,
+    helper,
+    data,
+    themeConfig,
+    config,
+    opts,
+    dest,
+    packageJson,
+    files,
+    globalUrl,
+    indexUrl,
+  });
 }
 
 module.exports = {

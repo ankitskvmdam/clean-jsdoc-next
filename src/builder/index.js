@@ -32,16 +32,14 @@ function generateReadmePage(options) {
 /**
  * @param {GenerateOptions} options
  */
-function generate(options) {
-  const { type } = options;
-
-  switch (type) {
-    case 'readme':
-      generateReadmePage(options);
-      break;
-  }
+function builder(options) {
+  // const { type } = options;
+  // switch (type) {
+  //   case 'readme':
+  //     generateReadmePage(options);
+  //     break;
+  // }
+  // console.log('Data', options);
 }
 
-module.exports = {
-  generate,
-};
+module.exports = builder;
