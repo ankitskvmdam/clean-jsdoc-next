@@ -3,6 +3,8 @@ const path = require('path');
 
 const chalk = require('chalk');
 
+const { cleanJSDocNextPath } = require('../../constants/paths');
+
 /**
  * To delete/remove directory. It will also delete the directory
  * if the directory is not empty.
@@ -126,6 +128,11 @@ function getFilenameWithoutExtension(pathname) {
   return path.basename(pathname).split('.')[0];
 }
 
+/**
+ * To write data into file.
+ * @param {string} dest destination/output path of the file
+ * @param {string} data data/string to write
+ */
 function writeDataIntoFile(dest, data) {
   try {
     fs.writeFileSync(dest, data);
@@ -134,11 +141,20 @@ function writeDataIntoFile(dest, data) {
   }
 }
 
-function writePageData(rootDest, url, data) {
-  const basename = getFilenameWithoutExtension(url);
-  let pathname = path.join(rootDest, 'app');
+/**
+ * To write page (Next.js Page) data
+ * @param {string} url expected url of the data
+ * @param {string} data data to write
+ * @param {string} root default is .clean-jsdoc-next/app path
+ */
+function writePageData(url, data, root) {
+  root = root ? root : path.join(cleanJSDocNextPath, 'app');
 
-  if (basename !== 'index') {
+  const basename = getFilenameWithoutExtension(url);
+
+  let pathname = root;
+
+  if (basename !== 'index' && basename !== '/') {
     pathname = path.join(pathname, basename);
     createDir(pathname);
   }
