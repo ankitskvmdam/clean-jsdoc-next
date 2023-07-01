@@ -18,9 +18,13 @@ function getImportMap() {
       import: '{ Inter }',
       from: 'next/font/google',
     },
-    readmePage: {
-      import: 'ReadmePage',
-      from: '@/components/page/readme',
+    htmlPage: {
+      import: 'HTMLPage',
+      from: '@/components/page/html',
+    },
+    docsPage: {
+      import: 'DocsPage',
+      from: '@/components/page/docs',
     },
   };
 }
