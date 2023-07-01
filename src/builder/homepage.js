@@ -15,13 +15,13 @@ const { getImportMap, getImportsString } = require('../utils/imports');
  */
 function getHomePageString(htmlString) {
   const importMap = getImportMap();
-  const imports = [importMap.readmePage];
+  const imports = [importMap.htmlPage];
 
   return `
   ${getImportsString(imports)}
 
   export default function Homepage() {
-    return <ReadmePage htmlString={\`${htmlString}\`} />
+    return <HTMLPage htmlString={\`${htmlString}\`} />
   }
   `;
 }
