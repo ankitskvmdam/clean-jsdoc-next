@@ -279,7 +279,7 @@ function getSectionWiseData(data) {
     classes: classesToGenerate,
     namespaces: namespacesToGenerate,
     externals: externalsToGenerate,
-    module: modulesToGenerate,
+    modules: modulesToGenerate,
     interfaces: interfacesToGenerate,
     mixins: mixinsToGenerate,
     globals: members.globals,
