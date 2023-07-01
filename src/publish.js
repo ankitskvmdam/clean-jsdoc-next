@@ -212,6 +212,7 @@ function publish(_data, opts, tutorials) {
     files,
     globalUrl,
     indexUrl,
+    env,
   });
 }
 

@@ -17,6 +17,7 @@
 
 const { writePageData } = require('../utils/file');
 const { getReadmePageJSX } = require('../utils/page-builder');
+const buildHomepage = require('./homepage');
 
 /**
  * @param {GenerateOptions} options
@@ -32,14 +33,31 @@ function generateReadmePage(options) {
 /**
  * @param {GenerateOptions} options
  */
+
+/**
+ * @typedef {Object} BuilderOptions
+ * @property {Array<any>} sections
+ * @property {boolean} canOutputSourceFiles
+ * @property {Object} helper
+ * @property {any} data
+ * @property {Object} themeConfig
+ * @property {Object} config
+ * @property {Object} opts
+ * @property {string} dest
+ * @property {Array<Object>} packageJson
+ * @property {Array<string>} files
+ * @property {string} globalUrl
+ * @property {string} indexUrl
+ * @property {Object} env
+ */
+
+/**
+ * @param {BuilderOptions} options
+ */
 function builder(options) {
-  // const { type } = options;
-  // switch (type) {
-  //   case 'readme':
-  //     generateReadmePage(options);
-  //     break;
-  // }
-  // console.log('Data', options);
+  const { opts, packageJson, files, indexUrl } = options;
+
+  buildHomepage({ opts, packageJson, files, indexUrl });
 }
 
 module.exports = builder;
