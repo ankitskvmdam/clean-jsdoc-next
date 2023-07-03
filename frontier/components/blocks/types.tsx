@@ -1,3 +1,6 @@
+import React from 'react';
+import Link from 'next/link';
+
 import { type TParamsEntityType } from '@/types';
 
 export type TTypesProps = {
@@ -11,5 +14,15 @@ export default function Types(props: TTypesProps) {
 
   if (names.length === 0) return null;
 
-  return names;
+  return names.map((type) => {
+    if (type.url) {
+      return (
+        <Link key={type.url} href={type.url}>
+          {type.name}
+        </Link>
+      );
+    }
+
+    return <React.Fragment key={type.name}>{type.name}</React.Fragment>;
+  });
 }

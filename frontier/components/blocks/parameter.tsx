@@ -68,11 +68,13 @@ export default function Parameter(props: TParameterProps) {
     <table {...rest}>
       <caption>Parameters</caption>
       <thead>
-        {columns.name && <th>Name</th>}
-        {columns.type && <th>Type</th>}
-        {columns.attributes && <th>Attributes</th>}
-        {columns.default && <th>Default</th>}
-        {columns.description && <th>Description</th>}
+        <tr>
+          {columns.name && <th>Name</th>}
+          {columns.type && <th>Type</th>}
+          {columns.attributes && <th>Attributes</th>}
+          {columns.default && <th>Default</th>}
+          {columns.description && <th>Description</th>}
+        </tr>
       </thead>
       <tbody>
         {params.map((param) => (
