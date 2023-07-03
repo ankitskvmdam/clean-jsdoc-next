@@ -29,3 +29,11 @@ th:first-child,
 td:first-child {
   @apply pl-0;
 }
+
+svg {
+  @apply h-6 w-6 fill-current;
+}
+
+.details td {
+  @apply border-b-0 align-top
+}
