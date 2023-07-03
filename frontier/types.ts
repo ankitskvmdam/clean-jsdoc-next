@@ -50,6 +50,21 @@ export type TDocsDataData = {
   hideconstructor?: boolean;
   summary?: string;
   description?: string;
+  see?: string[];
+  version?: string;
+  since?: string;
+  todo?: string[];
+  mixes?: string[];
+  author?: string[];
+  license?: string;
+  deprecated?: boolean;
+  copyright?: string;
+  defaultvalue?: string;
+  inherits?: string;
+  override?: boolean;
+  inherited?: boolean;
+  implementations?: string[];
+  implements?: string[];
 };
 
 export type TEntityCode = {
@@ -70,7 +85,7 @@ export type TEntityMetadata = {
 };
 
 export type TParamsEntityType = {
-  names: string[];
+  names: { name: string; url?: string }[];
 };
 
 export type TParamsEntity = {
