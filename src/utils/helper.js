@@ -59,60 +59,11 @@ function buildItemTypeStrings(item, helper) {
 
   if (item && item.type && item.type.names) {
     item.type.names.forEach(function (name) {
-      types.push(helper.linkto(name, helper.htmlsafe(name)));
+      types.push({ name, url: helper.htmlsafe(name) });
     });
   }
 
   return types;
-}
-
-function buildAttribsString(attribs, helper) {
-  let attribsString = '';
-
-  if (attribs && attribs.length) {
-    attribsString = helper.htmlsafe(`(${attribs.join(', ')}) `);
-  }
-
-  return attribsString;
-}
-
-function updateItemName(item) {
-  const attributes = getSignatureAttributes(item);
-  let itemName = item.name || '';
-
-  if (item.variable) {
-    itemName = '&hellip;' + itemName;
-  }
-
-  if (attributes && attributes.length) {
-    itemName = `${itemName}<span class="signature-attributes">${attributes.join(
-      ', '
-    )}</span>`;
-  }
-
-  return itemName;
-}
-
-function getSignatureAttributes({ optional, nullable }) {
-  const attributes = [];
-
-  if (optional) {
-    attributes.push('opt');
-  }
-
-  if (nullable === true) {
-    attributes.push('nullable');
-  } else if (nullable === false) {
-    attributes.push('non-null');
-  }
-
-  return attributes;
-}
-
-function addParamAttributes(params) {
-  return params
-    .filter(({ name }) => name && !name.includes('.'))
-    .map(updateItemName);
 }
 
 function addNonParamAttributes(items, helper) {
@@ -126,16 +77,17 @@ function addNonParamAttributes(items, helper) {
 }
 
 function addSignatureParams(f) {
-  const params = f.params ? addParamAttributes(f.params) : [];
+  const params = f.params || [];
 
-  f.signature = `${f.signature || ''}(${params.join(', ')})`;
+  f.signature = {
+    name: f.signature || f.name,
+    params,
+  };
 }
 
 function addSignatureReturns(f, helper) {
   const attribs = [];
-  let attribsString = '';
   let returnTypes = [];
-  let returnTypesString = '';
   const source = f.yields || f.returns;
 
   // jam all the return-type attributes into an array. this could create odd results (for example,
@@ -149,44 +101,32 @@ function addSignatureReturns(f, helper) {
         }
       });
     });
-
-    attribsString = buildAttribsString(attribs, helper);
   }
 
   if (source) {
     returnTypes = addNonParamAttributes(source, helper);
   }
-  if (returnTypes.length) {
-    returnTypesString = ` &rarr; ${attribsString}{${returnTypes.join('|')}}`;
-  }
 
-  let signatureOutput = '';
-
-  if (f.signature) {
-    signatureOutput =
-      '<span class="signature">' + (f.signature || '') + '</span>';
-  }
-  if (returnTypesString) {
-    signatureOutput +=
-      '<span class="type-signature">' + returnTypesString + '</span>';
-  }
-
-  f.signature = signatureOutput;
+  f.signature = {
+    fn: f.signature,
+    returnTypes,
+    attribs,
+  };
 }
 
 function addSignatureTypes(f, helper) {
   const types = f.type ? buildItemTypeStrings(f, helper) : [];
 
-  f.signature =
-    `${f.signature || ''}<span class="type-signature">` +
-    `${types.length ? ` :${types.join('|')}` : ''}</span>`;
+  f.signature = {
+    name: f.signature,
+    types,
+  };
 }
 
 function addAttribs(f, helper) {
   const attribs = helper.getAttribs(f);
-  const attribsString = buildAttribsString(attribs, helper);
 
-  f.attribs = `<span class="type-signature">${attribsString}</span>`;
+  f.attribs = attribs;
 }
 
 function needsSignature({ kind, type, meta }) {
@@ -224,10 +164,10 @@ function needsSignature({ kind, type, meta }) {
 
 /**
  * Generate section wise data.
- * @param {*} data
+ * @param {*} options
  */
-function getSectionWiseData(data) {
-  const { members, helper } = data;
+function getSectionWiseData(options) {
+  const { members, helper, data } = options;
   const classes = taffy(members.classes);
   const modules = taffy(members.modules);
   const namespaces = taffy(members.namespaces);
@@ -250,28 +190,56 @@ function getSectionWiseData(data) {
     const _module = helper.find(modules, { longname: longname });
     const _namespace = helper.find(namespaces, { longname: longname });
 
+    let additional = {};
+
+    if (
+      _module.length ||
+      _class.length ||
+      _namespace.length ||
+      _mixin.length ||
+      _external.length ||
+      _interface.length
+    ) {
+      additional = {
+        classes: helper.find(data, { kind: 'class', memberof: longname }),
+        interfaces: helper.find(data, {
+          kind: 'interface',
+          memberof: longname,
+        }),
+        mixins: helper.find(data, { kind: 'mixin', memberof: longname }),
+        namespaces: helper.find(data, {
+          kind: 'namespace',
+          memberof: longname,
+        }),
+        members: helper.find(data, { kind: 'members', memberof: longname }),
+        methods: helper.find(data, { kind: 'function', memberof: longname }),
+        typedefs: helper.find(data, { kind: 'typedef', memberof: longname }),
+        events: helper.find(data, { kind: 'event', memberof: longname }),
+      };
+    }
+
     if (_module.length) {
-      modulesToGenerate.push(_module);
+      modulesToGenerate.push({ data: _module[0], additional });
     }
 
     if (_class.length) {
-      classesToGenerate.push(_class);
+      classesToGenerate.push({ data: _class[0], additional });
     }
 
     if (_namespace.length) {
-      namespacesToGenerate.push(_namespace);
+      namespacesToGenerate.push({ data: _namespace[0], additional });
     }
 
     if (_mixin.length) {
-      mixinsToGenerate.push(_mixin);
+      mixinsToGenerate.push({ data: _mixin[0], additional });
     }
 
     if (_external.length) {
-      externalsToGenerate(_external);
+      externalsToGenerate({ data: _external[0], additional });
     }
 
     if (_interface.length) {
-      interfacesToGenerate(_interface);
+      interfacesToGenerate({ data: _interface[0], additional });
     }
   });
 

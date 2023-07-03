@@ -46,8 +46,8 @@ function buildDocsPage(data) {
 
   Object.values(otherSections).forEach((section) =>
     section.forEach((data) => {
-      const dataToWrite = getSectionPageString(data[0]);
-      const url = helper.longnameToUrl[data[0].longname];
+      const dataToWrite = getSectionPageString(data);
+      const url = helper.longnameToUrl[data.data.longname];
       writePageData(url, dataToWrite);
     })
   );

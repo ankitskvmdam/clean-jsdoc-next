@@ -193,7 +193,7 @@ function publish(_data, opts, tutorials) {
   const members = helper.getMembers(data);
   members.tutorials = tutorials.children;
 
-  const sections = getSectionWiseData({ members, helper });
+  const sections = getSectionWiseData({ members, helper, data });
 
   const canOutputSourceFiles = Boolean(
     templateConfig.default && templateConfig.default.outputSourceFiles !== false

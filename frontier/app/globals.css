@@ -2,3 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+
+table {
+  @apply w-full my-5;
+}
+
+table caption {
+  @apply text-left text-xs uppercase font-bold py-2;
+}
+
+th,
+td {
+  @apply text-left py-2 pl-6;
+}
+
+th {
+  @apply border-b-2
+}
+
+td {
+  @apply border-b
+}
+
+
+th:first-child,
+td:first-child {
+  @apply pl-0;
+}
