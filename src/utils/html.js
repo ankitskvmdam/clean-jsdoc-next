@@ -54,9 +54,14 @@ function addHTMLHookIfValueIsHTML(value) {
 
 function dataStringifyReplacer(key, value, helper) {
   if (typeof key !== 'string' && typeof key !== 'number') return value;
-  if (key === 'comment') return '';
-  if (key === 'type') return value;
-  if (key === 'code') return value;
+  /**
+   * We don't need comment.
+   */
+  if (key === 'comment') return undefined;
+  /**
+   * No processing for type, code and meta
+   */
+  if (key === 'type' || key === 'code' || key == 'meta') return value;
 
   if (typeof value !== 'string') return value;
 
