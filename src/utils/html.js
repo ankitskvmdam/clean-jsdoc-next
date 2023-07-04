@@ -9,7 +9,6 @@ function hasAnchorElement(text) {
 }
 
 function extractURLFromAnchorElement(text) {
-  console.log('Anchor', text);
   if (!text) return false;
 
   return text
