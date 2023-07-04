@@ -27,7 +27,7 @@ function getImportMap() {
       from: '@/components/page/docs',
     },
     link: {
-      import: '{ Link }',
+      import: 'Link',
       from: 'next/link',
     },
   };
