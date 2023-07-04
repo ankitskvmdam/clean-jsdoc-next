@@ -47,6 +47,13 @@ function getProcessedYield(yields) {
   }));
 }
 
+function getURLUsingHelperLinkto(name, helper) {
+  let url = helper.linkto(name);
+
+  if (!hasAnchorElement(url)) return undefined;
+  return extractURLFromAnchorElement(url);
+}
+
 function shortenPaths(files, commonPrefix) {
   Object.keys(files).forEach(function (file) {
     files[file].shortened = files[file].resolved
@@ -59,12 +66,12 @@ function shortenPaths(files, commonPrefix) {
 }
 
 // JSDoc helpers
-function buildItemTypeStrings(item, helper) {
+function getTypeNameAndURL(item, helper) {
   const types = [];
 
   if (item && item.type && item.type.names) {
     item.type.names.forEach(function (name) {
-      types.push({ name, url: helper.htmlsafe(name) });
+      types.push({ name, url: getURLUsingHelperLinkto(name, helper) });
     });
   }
 
@@ -75,7 +82,7 @@ function addNonParamAttributes(items, helper) {
   let types = [];
 
   items.forEach(function (item) {
-    types = types.concat(buildItemTypeStrings(item, helper));
+    types = types.concat(getTypeNameAndURL(item, helper));
   });
 
   return types;
@@ -120,7 +127,7 @@ function addSignatureReturns(f, helper) {
 }
 
 function addSignatureTypes(f, helper) {
-  const types = f.type ? buildItemTypeStrings(f, helper) : [];
+  const types = f.type ? getTypeNameAndURL(f, helper) : [];
 
   f.signature = {
     name: f.signature,
@@ -268,15 +275,7 @@ function attachLinkToParamsType(params, helper) {
     const links = [];
 
     for (const name of names) {
-      let url = helper.linkto(name);
-
-      if (!hasAnchorElement(url)) {
-        url = '';
-      } else {
-        url = extractURLFromAnchorElement(url);
-      }
-
-      links.push({ name, url });
+      links.push({ name, url: getURLUsingHelperLinkto(name, helper) });
     }
     param.type = { names: links };
   }

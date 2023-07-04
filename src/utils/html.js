@@ -9,9 +9,14 @@ function hasAnchorElement(text) {
 }
 
 function extractURLFromAnchorElement(text) {
+  console.log('Anchor', text);
   if (!text) return false;
 
-  return text.replace('<a href="', '').replace(/">.*/, '').replace('.html', '');
+  return text
+    .replace(/.*<a/, '<a')
+    .replace(/<\/a>.*/, '</a>')
+    .replace('<a href="', '')
+    .replace(/">.*/, '');
 }
 
 function replaceAnchorElementWithLinkElement(text) {
