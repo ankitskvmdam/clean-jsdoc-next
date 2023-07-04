@@ -125,7 +125,7 @@ function getAbsolutePathOf(pathOf) {
  * @returns {string} Returns the name of the file without extension
  */
 function getFilenameWithoutExtension(pathname) {
-  return path.basename(pathname).split('.')[0];
+  return path.basename(pathname).replace(path.extname(pathname), '');
 }
 
 /**
@@ -151,6 +151,8 @@ function writePageData(url, data, root) {
   root = root ? root : path.join(cleanJSDocNextPath, 'app');
 
   const basename = getFilenameWithoutExtension(url);
+
+  console.log('Basname', basename, 'url', url);
 
   let pathname = root;
 
