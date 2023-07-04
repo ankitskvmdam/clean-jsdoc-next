@@ -1,3 +1,5 @@
+const { parse } = require('node-html-parser');
+
 const HTML_SIGNATURE = '$HTML_FOUND$';
 
 function hasAnchorElement(text) {
@@ -20,7 +22,26 @@ function replaceAnchorElementWithLinkElement(text) {
 
 function doesStringContainHTML(text) {
   if (typeof text !== 'string' || text.length === 0) return false;
-  return /(\<(\/)?(\w)*(\d)?\>)/.test(text);
+
+  let isHTML = /<.*>.*<\/.*>/.test(text);
+
+  if (!isHTML) {
+    // This will test for <br/>, <hr/> like elements
+    isHTML = /<.*\/>/.test(text);
+  }
+
+  if (isHTML) {
+    try {
+      parse(text);
+    } catch (e) {
+      /**
+       * If text is not parsable then it is safe to
+       * return false and treat text as string.
+       */
+      return false;
+    }
+  }
+  return isHTML;
 }
 
 function addHTMLHookIfValueIsHTML(value) {
@@ -30,11 +51,12 @@ function addHTMLHookIfValueIsHTML(value) {
 function dataStringifyReplacer(key, value, helper) {
   if (typeof key !== 'string' && typeof key !== 'number') return value;
   if (key === 'comment') return '';
+  if (key === 'type') return value;
   if (typeof value !== 'string') return value;
 
   let updatedValue = value;
 
-  if (/{@link .*}/.test(updatedValue)) {
+  if (/@link/.test(updatedValue)) {
     updatedValue = helper.resolveLinks(updatedValue);
   }
 
@@ -53,8 +75,7 @@ function stringifyData(data, helper) {
   return stringData
     .replaceAll(`"${HTML_SIGNATURE}`, '<>')
     .replaceAll(`${HTML_SIGNATURE}"`, '</>')
-    .replaceAll(/href=\\"/g, 'href="')
-    .replaceAll(/\\"/g, '"');
+    .replaceAll(/\\"/g, "'");
 }
 
 module.exports = {
