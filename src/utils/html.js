@@ -63,6 +63,9 @@ function dataStringifyReplacer(key, value, helper) {
   }
 
   if (doesStringContainHTML(updatedValue)) {
+    updatedValue = updatedValue
+      .replaceAll(/{/g, '&#123;')
+      .replaceAll(/}/g, '&#125;');
     updatedValue = replaceAnchorElementWithLinkElement(updatedValue);
     return addHTMLHookIfValueIsHTML(updatedValue);
   }
