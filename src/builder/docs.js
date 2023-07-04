@@ -52,9 +52,7 @@ function buildDocsPage(data) {
       const dataToWrite = getSectionPageString(data, helper);
       const url = helper.longnameToUrl[data.data.longname];
       writePageData(url, dataToWrite);
-      return;
     });
-    return;
   });
 }
 
