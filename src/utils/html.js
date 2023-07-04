@@ -52,9 +52,11 @@ function dataStringifyReplacer(key, value, helper) {
   if (typeof key !== 'string' && typeof key !== 'number') return value;
   if (key === 'comment') return '';
   if (key === 'type') return value;
+  if (key === 'code') return value;
+
   if (typeof value !== 'string') return value;
 
-  let updatedValue = value;
+  let updatedValue = value.replace(/\n/g, '<br/>');
 
   if (/@link/.test(updatedValue)) {
     updatedValue = helper.resolveLinks(updatedValue);
