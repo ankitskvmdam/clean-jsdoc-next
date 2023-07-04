@@ -1,5 +1,3 @@
-import RenderHTML from './render-html';
-
 import { type TDocsDataData } from '@/types';
 import Types from './types';
 
@@ -81,7 +79,7 @@ export default function Parameter(props: TParameterProps) {
           <tr key={param.name}>
             {columns.name && (
               <td>
-                <RenderHTML>{param.name}</RenderHTML>
+                <div>{param.name}</div>
               </td>
             )}
             {columns.type && (
@@ -93,7 +91,7 @@ export default function Parameter(props: TParameterProps) {
             {columns.default && <td>Default</td>}
             {columns.description && (
               <td>
-                <RenderHTML>{param.description}</RenderHTML>
+                <div>{param.description}</div>
               </td>
             )}
           </tr>

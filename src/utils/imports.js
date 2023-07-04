@@ -26,6 +26,10 @@ function getImportMap() {
       import: 'DocsPage',
       from: '@/components/page/docs',
     },
+    link: {
+      import: '{ Link }',
+      from: 'next/link',
+    },
   };
 }
 

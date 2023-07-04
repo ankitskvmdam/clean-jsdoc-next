@@ -7,6 +7,7 @@
  */
 
 const { writePageData } = require('../utils/file');
+const { replaceAnchorElementWithLinkElement } = require('../utils/html');
 const { getImportMap, getImportsString } = require('../utils/imports');
 
 /**
@@ -15,13 +16,15 @@ const { getImportMap, getImportsString } = require('../utils/imports');
  */
 function getHomePageString(htmlString) {
   const importMap = getImportMap();
-  const imports = [importMap.htmlPage];
+  const imports = [importMap.link];
 
   return `
   ${getImportsString(imports)}
 
   export default function Homepage() {
-    return <HTMLPage htmlString={\`${htmlString}\`} />
+    return (<>
+    ${replaceAnchorElementWithLinkElement(htmlString)}
+    </>)
   }
   `;
 }

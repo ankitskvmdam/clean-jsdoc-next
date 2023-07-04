@@ -1,4 +1,3 @@
-import RenderHTML from '../blocks/render-html';
 import DocsPageData from '../blocks/docs-page-data';
 import Heading from '../blocks/heading';
 import type { TDocsData } from '@/types';
@@ -17,7 +16,7 @@ export default function DocsPage(props: TDocsPageProps) {
   return (
     <div>
       <Heading Component="h1">{pageName}</Heading>
-      <RenderHTML className="text-base mt-6">{classdesc}</RenderHTML>
+      <div className="text-base mt-6">{classdesc}</div>
       <DocsPageData data={data} />
     </div>
   );

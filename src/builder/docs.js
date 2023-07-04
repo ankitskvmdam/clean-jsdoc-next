@@ -12,45 +12,21 @@
  */
 
 const { writePageData } = require('../utils/file');
+const { attachLinkToParamsType } = require('../utils/helper');
+const { stringifyData } = require('../utils/html');
 const { getImportMap, getImportsString } = require('../utils/imports');
-const {
-  hasAnchorElement,
-  extractURLFromAnchorElement,
-} = require('../utils/link');
 
-function getSectionPageString(section) {
+function getSectionPageString(section, helper) {
   const importMap = getImportMap();
-  const imports = [importMap.docsPage];
+  const imports = [importMap.link, importMap.docsPage];
 
   return `
   ${getImportsString(imports)}
 
   export default function Doc() {
-    return <DocsPage data={${JSON.stringify(section)}} />
+    return <DocsPage data={${stringifyData(section, helper)}} />
   }
   `;
-}
-
-function attachLinkToParamsType(params, helper) {
-  if (!Array.isArray(params)) return;
-
-  for (const param of params) {
-    const names = param.type.names ?? [];
-    const links = [];
-
-    for (const name of names) {
-      let url = helper.linkto(name);
-
-      if (!hasAnchorElement(url)) {
-        url = '';
-      } else {
-        url = extractURLFromAnchorElement(url);
-      }
-
-      links.push({ name, url });
-    }
-    param.type = { names: links };
-  }
 }
 
 /**
@@ -68,18 +44,18 @@ function buildDocsPage(data) {
 
   if (typeof sections !== 'object' || typeof helper !== 'object') return;
 
-  // writeLinkMap(helper);
-
   const { globals, tutorials, ...otherSections } = sections;
 
-  Object.values(otherSections).forEach((section) =>
+  Object.values(otherSections).forEach((section) => {
     section.forEach((data) => {
       attachLinkToParamsType(data.data.params, helper);
-      const dataToWrite = getSectionPageString(data);
+      const dataToWrite = getSectionPageString(data, helper);
       const url = helper.longnameToUrl[data.data.longname];
       writePageData(url, dataToWrite);
-    })
-  );
+      return;
+    });
+    return;
+  });
 }
 
 module.exports = buildDocsPage;

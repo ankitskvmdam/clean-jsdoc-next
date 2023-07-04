@@ -2,6 +2,11 @@ const path = require('jsdoc/path');
 const showdown = require('showdown');
 const { taffy } = require('@jsdoc/salty');
 
+const {
+  hasAnchorElement,
+  extractURLFromAnchorElement,
+} = require('../utils/html');
+
 const mdToHTMLConverter = new showdown.Converter();
 
 function getPathFromDoclet({ meta }) {
@@ -255,6 +260,28 @@ function getSectionWiseData(options) {
   };
 }
 
+function attachLinkToParamsType(params, helper) {
+  if (!Array.isArray(params)) return;
+
+  for (const param of params) {
+    const names = param.type.names ?? [];
+    const links = [];
+
+    for (const name of names) {
+      let url = helper.linkto(name);
+
+      if (!hasAnchorElement(url)) {
+        url = '';
+      } else {
+        url = extractURLFromAnchorElement(url);
+      }
+
+      links.push({ name, url });
+    }
+    param.type = { names: links };
+  }
+}
+
 module.exports = {
   getPathFromDoclet,
   hashToLink,
@@ -265,5 +292,6 @@ module.exports = {
   needsSignature,
   addSignatureParams,
   addSignatureReturns,
+  attachLinkToParamsType,
   getSectionWiseData,
 };

@@ -2,7 +2,6 @@
 import Signature from './signature';
 
 import { EKind, type TDocsDataData } from '@/types';
-import RenderHTML from './render-html';
 import SectionHeading from './section-heading';
 import Parameter from './parameter';
 

@@ -1,7 +1,6 @@
 import Signature from './signature';
 
 import { EKind, type TDocsDataData } from '@/types';
-import RenderHTML from './render-html';
 import SectionHeading from './section-heading';
 import Parameter from './parameter';
 import Details from './details';
@@ -19,8 +18,8 @@ export default function Constructor(props: TConstructorProps) {
     <div>
       <SectionHeading id="constructor">Constructor</SectionHeading>
       <Signature data={data} />
-      <RenderHTML>{data.summary}</RenderHTML>
-      <RenderHTML>{data.description}</RenderHTML>
+      <div>{data.summary}</div>
+      <div>{data.description}</div>
       <Parameter data={data} />
       <Details data={data} />
     </div>
