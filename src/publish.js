@@ -12,6 +12,7 @@ const {
   addSignatureParams,
   addSignatureReturns,
   getSectionWiseData,
+  getURLUsingHelperLinkto,
 } = require('./utils/helper');
 const { copyStaticFiles } = require('./copy');
 const builder = require('./builder');
@@ -173,6 +174,17 @@ function publish(_data, opts, tutorials) {
       addSignatureTypes(doclet, helper);
       addAttribs(doclet, helper);
       doclet.kind = 'member';
+    }
+
+    if (doclet.augments) {
+      doclet.augments = doclet.augments.map((augment) => {
+        const url = getURLUsingHelperLinkto(augment, helper);
+
+        return {
+          name: augment,
+          url: typeof url === 'string' ? url.replace('.html', '') : '/',
+        };
+      });
     }
   });
 
