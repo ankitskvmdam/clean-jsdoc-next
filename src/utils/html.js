@@ -65,7 +65,7 @@ function dataStringifyReplacer(key, value, helper) {
 
   if (typeof value !== 'string') return value;
 
-  let updatedValue = value.replace(/\n/g, '<br/>');
+  let updatedValue = value.replace(/\n/g, '');
 
   if (/@link/.test(updatedValue)) {
     updatedValue = helper.resolveLinks(updatedValue);

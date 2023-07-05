@@ -152,8 +152,6 @@ function writePageData(url, data, root) {
 
   const basename = getFilenameWithoutExtension(url);
 
-  console.log('Basname', basename, 'url', url);
-
   let pathname = root;
 
   if (basename !== 'index' && basename !== '/') {
