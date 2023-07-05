@@ -39,7 +39,7 @@ function addLineNumbersBlockFor(inputHtml, options = {}) {
       html += format(
         '<tr>' +
           '<td class="{0} {1}" {3}="{5}">' +
-          '<div class="{2}" {3}="{5}">{5}</div>' +
+          '<div id="{5}" class="{2}" {3}="{5}">{5}</div>' +
           '</td>' +
           '<td class="{0} {4}" {3}="{5}">' +
           '{6}' +
