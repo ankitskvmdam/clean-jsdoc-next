@@ -9,16 +9,6 @@ const {
 
 const mdToHTMLConverter = new showdown.Converter();
 
-function getPathFromDoclet({ meta }) {
-  if (!meta) {
-    return null;
-  }
-
-  return meta.path && meta.path !== 'null'
-    ? path.join(meta.path, meta.filename)
-    : meta.filename;
-}
-
 function hashToLink(doclet, hash, dependencies, helper) {
   let url;
 
@@ -282,7 +272,6 @@ function attachLinkToParamsType(params, helper) {
 }
 
 module.exports = {
-  getPathFromDoclet,
   hashToLink,
   getProcessedYield,
   shortenPaths,

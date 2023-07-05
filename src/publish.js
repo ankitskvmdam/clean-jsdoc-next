@@ -4,10 +4,8 @@ const path = require('jsdoc/path');
 const env = require('jsdoc/env');
 
 const {
-  getPathFromDoclet,
   hashToLink,
   getProcessedYield,
-  shortenPaths,
   addAttribs,
   addSignatureTypes,
   needsSignature,
@@ -78,12 +76,9 @@ function publish(_data, opts, tutorials) {
 
   helper.addEventListeners(data);
 
-  const sourceFilePaths = [];
-  let sourceFiles = {};
+  const sourceFilePaths = {};
 
   data().each((doclet) => {
-    let sourcePath;
-
     doclet.attribs = '';
 
     if (doclet.examples) {
@@ -113,41 +108,39 @@ function publish(_data, opts, tutorials) {
       });
     }
 
-    // build a list of source files
-    if (doclet.meta) {
-      sourcePath = getPathFromDoclet(doclet);
-      sourceFiles[sourcePath] = {
-        resolved: sourcePath,
-        shortened: null,
-      };
-      if (sourceFilePaths.indexOf(sourcePath) === -1) {
-        sourceFilePaths.push(sourcePath);
-      }
-    }
-
     // to process yields.
     if (doclet.yields) {
       doclet.yields = getProcessedYield(doclet.yields);
     }
+
+    if (doclet.meta) {
+      const meta = doclet.meta;
+      if (meta) {
+        sourceFilePaths[path.join(meta.path || '', meta.filename)] = meta;
+      }
+    }
   });
 
-  if (sourceFilePaths.length) {
-    sourceFiles = shortenPaths(sourceFiles, path.commonPrefix(sourceFilePaths));
-  }
+  const commonPrefix = path.commonPrefix(Object.keys(sourceFilePaths));
+  const registeredURLOfSource = {};
 
   data().each(function (doclet) {
-    let docletPath;
     const url = helper.createLink(doclet);
-
     helper.registerLink(doclet.longname, url);
+    const meta = doclet.meta;
 
     // add a shortened version of the full path
-    if (doclet.meta) {
-      docletPath = getPathFromDoclet(doclet);
-      docletPath = sourceFiles[docletPath].shortened;
-      if (docletPath) {
-        doclet.meta.shortpath = docletPath;
+    if (meta) {
+      const filepath = path.join(meta.path || '', meta.filename);
+      const fileShortPath = filepath.replace(commonPrefix, '');
+      let sourceOutFile = registeredURLOfSource[filepath];
+      if (!sourceOutFile) {
+        sourceOutFile = helper.getUniqueFilename(fileShortPath);
+        helper.registerLink(fileShortPath, sourceOutFile);
+        registeredURLOfSource[filepath] = sourceOutFile;
       }
+
+      meta.sourceOutFile = sourceOutFile.replace('.html', '');
     }
   });
 
@@ -213,6 +206,7 @@ function publish(_data, opts, tutorials) {
     globalUrl,
     indexUrl,
     env,
+    sourceFilePaths: registeredURLOfSource,
   });
 }
 

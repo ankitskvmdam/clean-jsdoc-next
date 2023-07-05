@@ -26,6 +26,10 @@ function getImportMap() {
       import: 'DocsPage',
       from: '@/components/page/docs',
     },
+    sourcePage: {
+      import: 'SourcePage',
+      from: '@/components/page/source',
+    },
     link: {
       import: 'Link',
       from: 'next/link',

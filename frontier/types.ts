@@ -18,7 +18,7 @@ export type TDocsMeta = {
   columnno: number;
   path: string;
   code: TDocsCode;
-  shortpath: string;
+  sourceOutFile: string;
 };
 
 export type TDocsCode = {

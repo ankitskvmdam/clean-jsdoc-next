@@ -61,12 +61,9 @@ export default function Details(props: TDetailsProps) {
     see,
   } = props.data;
 
-  console.log('Ove', see);
   return (
     <table className="details">
       <tbody>
-        {/* {Object.keys(props.data).join(', ')}
-        {typeof override} */}
         <DetailsItem icon={<VersionIcon />} title="Version">
           {version}
         </DetailsItem>
@@ -106,8 +103,10 @@ export default function Details(props: TDetailsProps) {
         <DetailsItem icon={<DefaultIcon />} title="Default Value" /> */}
 
         <DetailsItem icon={<SourceIcon />} title="Source">
-          <Link href={`${meta.shortpath}`}>{meta.filename}</Link>,&nbsp;
-          <Link href={`${meta.shortpath}#${meta.lineno}`}>{meta.lineno}</Link>
+          <Link href={`${meta.sourceOutFile}`}>{meta.filename}</Link>,&nbsp;
+          <Link href={`${meta.sourceOutFile}#${meta.lineno}`}>
+            {meta.lineno}
+          </Link>
         </DetailsItem>
 
         {see && see.length > 0 && (
