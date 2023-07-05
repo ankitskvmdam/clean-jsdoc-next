@@ -7,7 +7,7 @@ export const inter = Inter({
 });
 
 export const ptMono = PT_Mono({
-  subsets: ['cyrillic'],
+  subsets: ['latin'],
   weight: '400',
   display: 'swap',
   variable: '--font-pt-mono',

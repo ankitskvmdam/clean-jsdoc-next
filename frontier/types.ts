@@ -17,8 +17,8 @@ export type TParamsEntityType = {
 
 export type TParamsEntity = {
   type: TParamsEntityType;
-  description: string;
-  name: string;
+  description?: string;
+  name?: string;
 };
 
 export type TDocsMeta = {
@@ -44,7 +44,7 @@ export type TDocsDataData = {
   classdesc: string;
   alias: string;
   kind: EKind;
-  augments: string[];
+  augments: { name: string; url: string }[];
   name: string;
   longname: string;
   scope: string;
@@ -52,7 +52,7 @@ export type TDocsDataData = {
   attribs: string;
   id: string;
   signature: {
-    fn: { name: string; params: TParamsEntity[] };
+    fn?: { name?: string; params: TParamsEntity[] };
     returnTypes: string[];
     attribs: string[];
   };
