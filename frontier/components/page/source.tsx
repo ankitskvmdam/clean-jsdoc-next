@@ -1,3 +1,5 @@
+import SourceCode from '../blocks/source-code';
+
 export type TSourcePageProps = {
   data: {
     code: string;
@@ -8,15 +10,12 @@ export type TSourcePageProps = {
 
 export default function SourcePage(props: TSourcePageProps) {
   const {
-    data: { code, title },
+    data: { code },
   } = props;
 
   return (
     <div>
-      {title}
-      <pre>
-        <code>{code}</code>
-      </pre>
+      <SourceCode code={code} />
     </div>
   );
 }

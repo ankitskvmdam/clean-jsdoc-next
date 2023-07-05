@@ -45,7 +45,7 @@ function buildSourcePages(data) {
 
     const dataToWrite = getSourcePageString({
       code: sourceFileData,
-      title: url.replace('.html'),
+      title: url.replace('.html', ''),
       outPath: url,
     });
 
