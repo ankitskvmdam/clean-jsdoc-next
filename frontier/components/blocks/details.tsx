@@ -1,7 +1,6 @@
 'use client';
+import Link from 'next/link';
 import Signature from './signature';
-
-import { EKind, type TDocsDataData } from '@/types';
 import SectionHeading from './section-heading';
 import Parameter from './parameter';
 
@@ -20,6 +19,8 @@ import DefaultIcon from '@/icons/compass-icon.svg';
 import TutorialIcon from '@/icons/tutorial-icon.svg';
 import SeeIcon from '@/icons/link-icon.svg';
 import TodoIcon from '@/icons/todo-icon.svg';
+
+import { EKind, type TDocsDataData } from '@/types';
 
 export type TDetailsProps = {
   data: TDocsDataData;
@@ -49,10 +50,18 @@ function DetailsItem(props: TDetailsItemProps) {
 }
 
 export default function Details(props: TDetailsProps) {
-  const { version, since, inherits, inherited, override, implementations } =
-    props.data;
+  const {
+    version,
+    since,
+    inherits,
+    inherited,
+    override,
+    implementations,
+    meta,
+    see,
+  } = props.data;
 
-  console.log('Ove', override);
+  console.log('Ove', see);
   return (
     <table className="details">
       <tbody>
@@ -89,16 +98,28 @@ export default function Details(props: TDetailsProps) {
           </DetailsItem>
         )}
 
-        {/* 
-        <DetailsItem icon={<MixesIcon />} title="Mixes In" />
+        {/* <DetailsItem icon={<MixesIcon />} title="Mixes In" />
         <DetailsItem icon={<DeprecatedIcon />} title="Deprecated" />
         <DetailsItem icon={<AuthorIcon />} title="Author" />
         <DetailsItem icon={<CopyrightIcon />} title="Copyright" />
         <DetailsItem icon={<LicenseIcon />} title="License" />
-        <DetailsItem icon={<DefaultIcon />} title="Default Value" />
-        <DetailsItem icon={<SourceIcon />} title="Source" />
-        <DetailsItem icon={<TutorialIcon />} title="Tutorial" />
-        <DetailsItem icon={<SeeIcon />} title="See" />
+        <DetailsItem icon={<DefaultIcon />} title="Default Value" /> */}
+
+        <DetailsItem icon={<SourceIcon />} title="Source">
+          <Link href={`${meta.shortpath}`}>{meta.filename}</Link>,&nbsp;
+          <Link href={`${meta.shortpath}#${meta.lineno}`}>{meta.lineno}</Link>
+        </DetailsItem>
+
+        {see && see.length > 0 && (
+          <DetailsItem icon={<SeeIcon />} title="See">
+            {see.map((link) => (
+              <Link href={link} key={link} className="block">
+                {link}
+              </Link>
+            ))}
+          </DetailsItem>
+        )}
+        {/* <DetailsItem icon={<TutorialIcon />} title="Tutorial" />
         <DetailsItem icon={<TodoIcon />} title="To Do" /> */}
       </tbody>
     </table>
