@@ -8,7 +8,7 @@ export type TConstructorProps = {
 export default function Constructor(props: TConstructorProps) {
   const { data } = props;
 
-  if (data.kind === EKind.Module || data.hideconstructor) return null;
+  if (!(data.kind === EKind.Class) || !data.classdesc) return null;
 
   return <Section id="constructor" heading="Constructor" data={[data]} />;
 }
