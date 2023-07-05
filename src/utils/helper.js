@@ -257,16 +257,35 @@ function getSectionWiseData(options) {
   };
 }
 
+function convertNamesIntoNameURLMap(arr, helper) {
+  if (!Array.isArray(arr)) return arr;
+
+  return arr.map((name) => {
+    let url = '';
+
+    if (/@link/.test(name)) {
+      url = getURLUsingHelperLinkto(name, helper);
+      if (url) {
+        name = url;
+      }
+    } else {
+      url = getURLUsingHelperLinkto(name, helper);
+    }
+
+    return {
+      name,
+      url: typeof url === 'string' ? url.replace('.html', '') : url,
+    };
+  });
+}
+
 function attachLinkToParamsType(params, helper) {
   if (!Array.isArray(params)) return;
 
   for (const param of params) {
     const names = param.type.names ?? [];
-    const links = [];
+    const links = convertNamesIntoNameURLMap(names, helper);
 
-    for (const name of names) {
-      links.push({ name, url: getURLUsingHelperLinkto(name, helper) });
-    }
     param.type = { names: links };
   }
 }
@@ -283,4 +302,5 @@ module.exports = {
   attachLinkToParamsType,
   getSectionWiseData,
   getURLUsingHelperLinkto,
+  convertNamesIntoNameURLMap,
 };

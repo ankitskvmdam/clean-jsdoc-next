@@ -103,18 +103,18 @@ export default function Details(props: TDetailsProps) {
         <DetailsItem icon={<DefaultIcon />} title="Default Value" /> */}
 
         <DetailsItem icon={<SourceIcon />} title="Source">
-          <Link href={`${meta.sourceOutFile}`}>{meta.filename}</Link>,&nbsp;
+          <Link href={`${meta.sourceOutFile}`}>{meta.displayName}</Link>,&nbsp;
           <Link href={`${meta.sourceOutFile}#${meta.lineno}`}>
-            {meta.lineno}
+            line {meta.lineno}
           </Link>
         </DetailsItem>
 
         {see && see.length > 0 && (
           <DetailsItem icon={<SeeIcon />} title="See">
             {see.map((link) => (
-              <Link href={link} key={link} className="block">
-                {link}
-              </Link>
+              <div key={link.name}>
+                <Link href={link.url || '#'}>{link.name}</Link>
+              </div>
             ))}
           </DetailsItem>
         )}

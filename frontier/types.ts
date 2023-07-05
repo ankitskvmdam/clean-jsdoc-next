@@ -11,8 +11,13 @@ export enum EKind {
   Event = 'event',
 }
 
+export type TNameURL = {
+  name: string;
+  url?: string;
+};
+
 export type TParamsEntityType = {
-  names: { name: string; url?: string }[];
+  names: TNameURL[];
 };
 
 export type TParamsEntity = {
@@ -29,6 +34,7 @@ export type TDocsMeta = {
   path: string;
   code: TDocsCode;
   sourceOutFile: string;
+  displayName: string;
 };
 
 export type TDocsCode = {
@@ -44,13 +50,14 @@ export type TDocsDataData = {
   classdesc: string;
   alias: string;
   kind: EKind;
-  augments: { name: string; url: string }[];
+  augments: TNameURL[];
   name: string;
   longname: string;
   scope: string;
   params: TParamsEntity[];
   attribs: string;
   id: string;
+  examples?: { caption: string; code: string; id: string }[];
   signature: {
     fn?: { name?: string; params: TParamsEntity[] };
     returnTypes: string[];
@@ -60,7 +67,7 @@ export type TDocsDataData = {
   hideconstructor?: boolean;
   summary?: string;
   description?: string;
-  see?: string[];
+  see?: TNameURL[];
   version?: string;
   since?: string;
   todo?: string[];

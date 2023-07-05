@@ -4,6 +4,7 @@ import { EKind, type TDocsDataData } from '@/types';
 import SectionHeading from './section-heading';
 import Parameter from './parameter';
 import Details from './details';
+import Example from './example';
 
 export type SectionProps = {
   data: TDocsDataData[];
@@ -26,6 +27,7 @@ export default function Section(props: SectionProps) {
           <div>{datum.description}</div>
           <Parameter data={datum} />
           <Details data={datum} />
+          <Example examples={datum.examples} />
         </div>
       ))}
     </div>

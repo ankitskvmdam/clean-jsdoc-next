@@ -41,3 +41,15 @@ svg {
 p {
   @apply mb-2
 }
+
+a {
+  @apply text-blue-600
+}
+
+a:hover {
+  @apply underline
+}
+
+table.hljs-ln td{
+  @apply border-b-0 p-0
+}

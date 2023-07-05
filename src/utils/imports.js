@@ -34,6 +34,10 @@ function getImportMap() {
       import: 'Link',
       from: 'next/link',
     },
+    code: {
+      import: 'Code',
+      from: '@/components/blocks/code',
+    },
   };
 }
 

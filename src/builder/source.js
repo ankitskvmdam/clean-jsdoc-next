@@ -2,6 +2,7 @@ const fs = require('fs');
 
 const { writePageData } = require('../utils/file');
 const { getImportMap, getImportsString } = require('../utils/imports');
+const { highlightCode } = require('../utils/code');
 
 /**
  * @typedef {Object} SourcePageData
@@ -17,14 +18,21 @@ const { getImportMap, getImportsString } = require('../utils/imports');
  */
 function getSourcePageString(data) {
   const importMap = getImportMap();
-  const imports = [importMap.sourcePage];
+  const imports = [importMap.code];
+
+  const { code, title, outPath } = data;
 
   return `
   ${getImportsString(imports)}
 
+  const codeData =\`${highlightCode(code, 'javascript', true).replaceAll(
+    '`',
+    '\\`'
+  )}\`
+  
   export default function Source() {
     return (
-      <SourcePage data={${JSON.stringify(data)}} />
+      <Code code={codeData} />
     )
   }
   `;

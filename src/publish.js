@@ -2,6 +2,7 @@ const chalk = require('chalk');
 const helper = require('jsdoc/util/templateHelper');
 const path = require('jsdoc/path');
 const env = require('jsdoc/env');
+const getId = require('nanoid').nanoid;
 
 const {
   hashToLink,
@@ -12,10 +13,11 @@ const {
   addSignatureParams,
   addSignatureReturns,
   getSectionWiseData,
-  getURLUsingHelperLinkto,
+  convertNamesIntoNameURLMap,
 } = require('./utils/helper');
 const { copyStaticFiles } = require('./copy');
 const builder = require('./builder');
+const { highlightCode } = require('./utils/code');
 
 const config = env.conf;
 const cleanConfig = config.clean || config.opts.clean;
@@ -98,7 +100,8 @@ function publish(_data, opts, tutorials) {
 
         return {
           caption: caption || '',
-          code: code || example,
+          code: highlightCode(code || example),
+          id: getId(),
         };
       });
     }
@@ -142,6 +145,10 @@ function publish(_data, opts, tutorials) {
       }
 
       meta.sourceOutFile = sourceOutFile.replace('.html', '');
+
+      // In windows path separator is backward slash.
+      // So we are replacing backward slash with forward.
+      meta.displayName = fileShortPath.replace(/\\/g, '/');
     }
   });
 
@@ -177,14 +184,11 @@ function publish(_data, opts, tutorials) {
     }
 
     if (doclet.augments) {
-      doclet.augments = doclet.augments.map((augment) => {
-        const url = getURLUsingHelperLinkto(augment, helper);
+      doclet.augments = convertNamesIntoNameURLMap(doclet.augments, helper);
+    }
 
-        return {
-          name: augment,
-          url: typeof url === 'string' ? url.replace('.html', '') : '/',
-        };
-      });
+    if (doclet.see) {
+      doclet.see = convertNamesIntoNameURLMap(doclet.see, helper);
     }
   });
 

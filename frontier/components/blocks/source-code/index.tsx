@@ -25,7 +25,7 @@ export default function SourceCode(props: TSourceCode) {
         value: code,
         automaticLayout: true,
         readOnly: true,
-        language,
+        language: 'javascript',
         theme: 'vs-dark',
       });
       setHasEditor(true);
