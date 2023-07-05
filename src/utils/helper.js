@@ -213,7 +213,7 @@ function getSectionWiseData(options) {
           kind: 'namespace',
           memberof: longname,
         }),
-        members: helper.find(data, { kind: 'members', memberof: longname }),
+        members: helper.find(data, { kind: 'member', memberof: longname }),
         methods: helper.find(data, { kind: 'function', memberof: longname }),
         typedefs: helper.find(data, { kind: 'typedef', memberof: longname }),
         events: helper.find(data, { kind: 'event', memberof: longname }),
@@ -282,4 +282,5 @@ module.exports = {
   addSignatureReturns,
   attachLinkToParamsType,
   getSectionWiseData,
+  getURLUsingHelperLinkto,
 };
