@@ -37,3 +37,7 @@ svg {
 .details td {
   @apply border-b-0 align-top
 }
+
+p {
+  @apply mb-2
+}
