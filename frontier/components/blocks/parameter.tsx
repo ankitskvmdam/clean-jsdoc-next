@@ -58,7 +58,7 @@ export default function Parameter(props: TParameterProps) {
     ...rest
   } = props;
 
-  if (params.length === 0) return null;
+  if (!Array.isArray(params) || params.length === 0) return null;
 
   const columns = getColumnsToShow(params);
 

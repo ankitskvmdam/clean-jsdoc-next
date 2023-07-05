@@ -17,7 +17,7 @@ export default function DocsPage(props: TDocsPageProps) {
     <div>
       <Heading Component="h1">{pageName}</Heading>
       <div className="text-base mt-6">{classdesc}</div>
-      <DocsPageData data={data} />
+      <DocsPageData data={data} additional={additional} />
     </div>
   );
 }

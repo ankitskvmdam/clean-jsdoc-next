@@ -11,6 +11,16 @@ export enum EKind {
   Event = 'event',
 }
 
+export type TParamsEntityType = {
+  names: { name: string; url?: string }[];
+};
+
+export type TParamsEntity = {
+  type: TParamsEntityType;
+  description: string;
+  name: string;
+};
+
 export type TDocsMeta = {
   range: number[];
   filename: string;
@@ -84,51 +94,15 @@ export type TEntityMetadata = {
   shortpath: string;
 };
 
-export type TParamsEntityType = {
-  names: { name: string; url?: string }[];
-};
-
-export type TParamsEntity = {
-  type: TParamsEntityType;
-  description: string;
-  name: string;
-};
-
-export type TMethodEntity = {
-  comment: string;
-  meta: TEntityMetadata;
-  description: string;
-  params?: TParamsEntity[];
-  see?: string[] | null;
-  name: string;
-  longname: string;
-  kind: EKind;
-  memberof: string;
-  scope: string;
-  attribs: string;
-  id: string;
-  signature: string;
-  ancestors?: string[] | null;
-  overrides?: string | null;
-};
-
-export type TClassEntity = any[];
-export type TInterfaceEntity = any[];
-export type TMixinEntity = any[];
-export type TNamespaceEntity = any[];
-export type TMemberEntity = any[];
-export type TTypedefEntity = any[];
-export type TEventEntity = any[];
-
 export interface TDocsDataAdditionalData {
-  classes: TClassEntity[];
-  interfaces: TInterfaceEntity[];
-  mixins: TMixinEntity[];
-  namespaces: TNamespaceEntity[];
-  members: TMemberEntity[];
-  methods: TMethodEntity[];
-  typedefs: TTypedefEntity[];
-  events: TEventEntity[];
+  classes: TDocsDataData[];
+  interfaces: TDocsDataData[];
+  mixins: TDocsDataData[];
+  namespaces: TDocsDataData[];
+  members: TDocsDataData[];
+  methods: TDocsDataData[];
+  typedefs: TDocsDataData[];
+  events: TDocsDataData[];
 }
 
 export type TDocsData = {
