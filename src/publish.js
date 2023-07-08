@@ -106,12 +106,6 @@ function publish(_data, opts, tutorials) {
       });
     }
 
-    if (doclet.see) {
-      doclet.see.forEach(function (seeItem, i) {
-        doclet.see[i] = hashToLink(doclet, seeItem);
-      });
-    }
-
     // to process yields.
     if (doclet.yields) {
       doclet.yields = getProcessedYield(doclet.yields);
