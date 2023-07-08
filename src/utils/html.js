@@ -11,11 +11,22 @@ function hasAnchorElement(text) {
 function extractURLFromAnchorElement(text) {
   if (!text) return false;
 
-  return text
+  const prefix = text.split(/<a href.*>/)[0];
+  const suffix = text.split(/\/a>/)[1];
+  const anchor = text.replace(prefix, '').replace(suffix, '');
+  const url = anchor
     .replace(/.*<a/, '<a')
     .replace(/<\/a>.*/, '</a>')
     .replace('<a href="', '')
     .replace(/">.*/, '');
+  const linkText = url.replace(/<a href=['"].*['"]>/g, '').replace(/<\/a>/, '');
+
+  return {
+    prefix,
+    suffix,
+    url,
+    linkText,
+  };
 }
 
 function replaceAnchorElementWithLinkElement(text) {
