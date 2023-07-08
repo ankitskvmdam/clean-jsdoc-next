@@ -38,58 +38,115 @@ function getProcessedYield(yields) {
 }
 
 function getURLUsingHelperLinkto(name, helper) {
-  let url = helper.linkto(name);
+  let url = linkto(helper, name);
 
   if (!hasAnchorElement(url)) return undefined;
   return extractURLFromAnchorElement(url);
 }
 
-function shortenPaths(files, commonPrefix) {
-  Object.keys(files).forEach(function (file) {
-    files[file].shortened = files[file].resolved
-      .replace(commonPrefix, '')
-      // always use forward slashes
-      .replace(/\\/g, '/');
-  });
+/**
+ *
+ * @param {string} anchorElement anchor element
+ * @returns {string}
+ */
+function replaceUnbalanceClosedHTMLTagsWithHTMLEntity(anchorElement) {
+  if (typeof anchorElement !== 'string') return anchorElement;
 
-  return files;
-}
+  const stack = [];
+  let balanced = '';
 
-// JSDoc helpers
-function getTypeNameAndURL(item, helper) {
-  const types = [];
-
-  if (item && item.type && item.type.names) {
-    item.type.names.forEach(function (name) {
-      types.push({ name, url: getURLUsingHelperLinkto(name, helper) });
-    });
+  for (const char of anchorElement) {
+    if (char === '<') {
+      stack.push('<');
+      balanced += '<';
+    } else if (char === '>' && stack.length > 0) {
+      stack.pop();
+      balanced += '>';
+    } else if (char === '>' && stack.length === 0) {
+      balanced += '&gt;';
+    } else {
+      balanced += char;
+    }
   }
 
-  return types;
+  return balanced;
+}
+
+function linkto(helper, name, linktext) {
+  const url = helper.linkto(name, linktext);
+  return replaceUnbalanceClosedHTMLTagsWithHTMLEntity(url);
 }
 
 function addNonParamAttributes(items, helper) {
   let types = [];
 
   items.forEach(function (item) {
-    types = types.concat(getTypeNameAndURL(item, helper));
+    types = types.concat(buildItemTypeStrings(item, helper));
   });
 
   return types;
 }
 
-function addSignatureParams(f) {
-  const params = f.params || [];
+function getSignatureAttributes({ optional, nullable }) {
+  const attributes = [];
 
-  f.signature = {
-    name: f.signature || f.name,
-    params,
-  };
+  if (optional) {
+    attributes.push('opt');
+  }
+
+  if (nullable === true) {
+    attributes.push('nullable');
+  } else if (nullable === false) {
+    attributes.push('non-null');
+  }
+
+  return attributes;
+}
+
+function updateItemName(item) {
+  const attributes = getSignatureAttributes(item);
+  let itemName = item.name || '';
+
+  if (item.variable) {
+    itemName = '&hellip;' + itemName;
+  }
+
+  if (attributes && attributes.length) {
+    itemName = `${itemName}<span class="signature-attributes">${attributes.join(
+      ', '
+    )}</span>`;
+  }
+
+  return itemName;
+}
+
+function addParamAttributes(params) {
+  return params
+    .filter(({ name }) => name && !name.includes('.'))
+    .map(updateItemName);
+}
+
+function addSignatureParams(f) {
+  const params = f.params ? addParamAttributes(f.params) : [];
+
+  f.signature = `${f.signature || ''}(${params.join(', ')})`;
+}
+
+function buildAttribsString(attribs, helper) {
+  let attribsString = '';
+
+  if (attribs && attribs.length) {
+    attribsString = helper.htmlsafe(`(${attribs.join(', ')}) `);
+  }
+
+  return attribsString;
 }
 
 function addSignatureReturns(f, helper) {
   const attribs = [];
+  let attribsString = '';
   let returnTypes = [];
+  let returnTypesString = '';
   const source = f.yields || f.returns;
 
   // jam all the return-type attributes into an array. this could create odd results (for example,
@@ -103,26 +160,50 @@ function addSignatureReturns(f, helper) {
         }
       });
     });
+
+    attribsString = buildAttribsString(attribs, helper);
   }
 
   if (source) {
     returnTypes = addNonParamAttributes(source, helper);
   }
+  if (returnTypes.length) {
+    returnTypesString = ` &rarr; ${attribsString}{${returnTypes.join('|')}}`;
+  }
 
-  f.signature = {
-    fn: f.signature,
-    returnTypes,
-    attribs,
-  };
+  let signatureOutput = '';
+
+  if (f.signature) {
+    signatureOutput =
+      '<span class="signature">' + (f.signature || '') + '</span>';
+  }
+  if (returnTypesString) {
+    signatureOutput +=
+      '<span class="type-signature">' + returnTypesString + '</span>';
+  }
+
+  f.signature = signatureOutput;
+}
+
+function buildItemTypeStrings(item, helper) {
+  const types = [];
+
+  if (item && item.type && item.type.names) {
+    item.type.names.forEach(function (name) {
+      const url = linkto(helper, name, helper.htmlsafe(name));
+      types.push(url);
+    });
+  }
+
+  return types;
 }
 
 function addSignatureTypes(f, helper) {
-  const types = f.type ? getTypeNameAndURL(f, helper) : [];
+  const types = f.type ? buildItemTypeStrings(f, helper) : [];
 
-  f.signature = {
-    name: f.signature,
-    types,
-  };
+  f.signature =
+    `${f.signature || ''}<span class="type-signature">` +
+    `${types.length ? ` :${types.join('|')}` : ''}</span>`;
 }
 
 function addAttribs(f, helper) {
@@ -194,6 +275,18 @@ function getSectionWiseData(options) {
 
     let additional = {};
 
+    function extractLinkAndSummary(arr) {
+      return arr.map((item) => {
+        const url = linkto(helper, item.longname, item.name);
+
+        return {
+          name: item.name,
+          url,
+          summary: item.summary,
+        };
+      });
+    }
+
     if (
       _module.length ||
       _class.length ||
@@ -203,16 +296,24 @@ function getSectionWiseData(options) {
       _interface.length
     ) {
       additional = {
-        classes: helper.find(data, { kind: 'class', memberof: longname }),
-        interfaces: helper.find(data, {
-          kind: 'interface',
-          memberof: longname,
-        }),
-        mixins: helper.find(data, { kind: 'mixin', memberof: longname }),
-        namespaces: helper.find(data, {
-          kind: 'namespace',
-          memberof: longname,
-        }),
+        classes: extractLinkAndSummary(
+          helper.find(data, { kind: 'class', memberof: longname })
+        ),
+        interfaces: extractLinkAndSummary(
+          helper.find(data, {
+            kind: 'interface',
+            memberof: longname,
+          })
+        ),
+        mixins: extractLinkAndSummary(
+          helper.find(data, { kind: 'mixin', memberof: longname })
+        ),
+        namespaces: extractLinkAndSummary(
+          helper.find(data, {
+            kind: 'namespace',
+            memberof: longname,
+          })
+        ),
         members: helper.find(data, { kind: 'member', memberof: longname }),
         methods: helper.find(data, { kind: 'function', memberof: longname }),
         typedefs: helper.find(data, { kind: 'typedef', memberof: longname }),
@@ -274,32 +375,19 @@ function convertNamesIntoNameURLMap(arr, helper) {
 
     return {
       name,
-      url: typeof url === 'string' ? url.replace('.html', '') : url,
+      url,
     };
   });
-}
-
-function attachLinkToParamsType(params, helper) {
-  if (!Array.isArray(params)) return;
-
-  for (const param of params) {
-    const names = param.type.names ?? [];
-    const links = convertNamesIntoNameURLMap(names, helper);
-
-    param.type = { names: links };
-  }
 }
 
 module.exports = {
   hashToLink,
   getProcessedYield,
-  shortenPaths,
   addAttribs,
   addSignatureTypes,
   needsSignature,
   addSignatureParams,
   addSignatureReturns,
-  attachLinkToParamsType,
   getSectionWiseData,
   getURLUsingHelperLinkto,
   convertNamesIntoNameURLMap,
