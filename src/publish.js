@@ -18,6 +18,7 @@ const {
 const { copyStaticFiles } = require('./copy');
 const builder = require('./builder');
 const { highlightCode } = require('./utils/code');
+const { generateFileTreeUsingMembers } = require('./utils/file-tree');
 
 const config = env.conf;
 const cleanConfig = config.clean || config.opts.clean;
@@ -70,6 +71,9 @@ function publish(_data, opts, tutorials) {
 
   const globalUrl = helper.getUniqueFilename('global');
   helper.registerLink('global', globalUrl);
+
+  // set up tutorials for helper
+  helper.setTutorials(tutorials);
 
   const data = helper.prune(_data);
 
@@ -193,8 +197,12 @@ function publish(_data, opts, tutorials) {
     }
   });
 
-  const packageJson = helper.find(data, { kind: 'package' }) || [];
-  const files = helper.find(data, { kind: 'file' });
+  function helperFind(obj) {
+    return helper.find(data, obj);
+  }
+
+  const packageJson = helperFind({ kind: 'package' }) || [];
+  const files = helperFind({ kind: 'file' });
 
   if (typeof packageJson[0] === 'object' && packageJson[0].name) {
     dest = path.join(dest, packageJson[0].name, packageJson[0].version || '');
@@ -204,6 +212,10 @@ function publish(_data, opts, tutorials) {
   members.tutorials = tutorials.children;
 
   const sections = getSectionWiseData({ members, helper, data });
+  const fileTree = generateFileTreeUsingMembers({
+    members: sections,
+    helper,
+  });
 
   const canOutputSourceFiles = Boolean(
     templateConfig.default && templateConfig.default.outputSourceFiles !== false
@@ -224,6 +236,7 @@ function publish(_data, opts, tutorials) {
     indexUrl,
     env,
     sourceFilePaths: registeredURLOfSource,
+    fileTree,
   });
 }
 

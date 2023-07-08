@@ -1,6 +1,7 @@
 const buildHomepage = require('./homepage');
 const buildDocsPage = require('./docs');
 const buildSourcePages = require('./source');
+const buildSidebar = require('./sidebar');
 
 /**
  * @typedef {Object} BuilderOptions
@@ -18,6 +19,7 @@ const buildSourcePages = require('./source');
  * @property {string} indexUrl
  * @property {Object} env
  * @property {Record<string, string>} sourceFilePaths
+ * @property {Record<keyof import('./docs').Sections, any>} fileTree
  */
 
 /**
@@ -33,6 +35,7 @@ function builder(options) {
     helper,
     sourceFilePaths,
     canOutputSourceFiles,
+    fileTree,
   } = options;
 
   if (canOutputSourceFiles) {
@@ -43,6 +46,7 @@ function builder(options) {
     });
   }
 
+  buildSidebar({ fileTree });
   buildHomepage({ opts, packageJson, files, indexUrl });
   buildDocsPage({ sections, helper });
 }

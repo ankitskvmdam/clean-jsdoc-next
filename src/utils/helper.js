@@ -347,6 +347,14 @@ function getSectionWiseData(options) {
     }
   });
 
+  function transform(_d) {
+    if (!Array.isArray(_d)) return [];
+    return _d.map((d) => ({ data: d }));
+  }
+
+  const globals = transform(members.globals);
+  const tutorials = transform(members.tutorials);
+
   return {
     classes: classesToGenerate,
     namespaces: namespacesToGenerate,
@@ -354,8 +362,8 @@ function getSectionWiseData(options) {
     modules: modulesToGenerate,
     interfaces: interfacesToGenerate,
     mixins: mixinsToGenerate,
-    globals: members.globals,
-    tutorials: members.tutorials,
+    globals,
+    tutorials,
   };
 }
 
@@ -379,4 +387,5 @@ module.exports = {
   getSectionWiseData,
   getURLUsingHelperLinkto,
   convertNamesIntoNameURLMap,
+  linkto,
 };
