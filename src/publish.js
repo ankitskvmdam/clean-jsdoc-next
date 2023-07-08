@@ -184,6 +184,13 @@ function publish(_data, opts, tutorials) {
     if (doclet.see) {
       doclet.see = convertNamesIntoNameURLMap(doclet.see, helper);
     }
+
+    if (doclet.inherits) {
+      doclet.inherits = convertNamesIntoNameURLMap(
+        Array.isArray(doclet.inherits) ? doclet.inherits : [doclet.inherits],
+        helper
+      );
+    }
   });
 
   const packageJson = helper.find(data, { kind: 'package' }) || [];

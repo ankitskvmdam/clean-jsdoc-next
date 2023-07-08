@@ -1,7 +1,11 @@
-import type { TDocsDataAdditionalData, TDocsDataData } from '@/types';
-import Constructor from './constructor';
+import {
+  EKind,
+  type TDocsDataAdditionalData,
+  type TDocsDataData,
+} from '@/types';
 import Section from './section';
-import Augments from './augments';
+import LinkList from './link-list';
+import { getCanShowConstructor } from '@/utils/is';
 
 export type TDocsPageDataProps = {
   data: TDocsDataData;
@@ -11,10 +15,31 @@ export type TDocsPageDataProps = {
 export default function DocsPageData(props: TDocsPageDataProps) {
   const { data, additional } = props;
 
+  // console.log('Classes', data.ancestors, data.kind);
+
+  const canShowConstructor = getCanShowConstructor(data);
+
   return (
     <div>
-      <Constructor data={data} />
-      <Augments heading="Extends" id="extends" augments={data.augments} />
+      <Section
+        id={canShowConstructor ? 'constructor' : ''}
+        heading={canShowConstructor ? 'Constructor' : ''}
+        data={[data]}
+      />
+      {data.kind === EKind.Module && data.description}
+      <LinkList heading="Extends" id="extends" linkList={data.augments} />
+      <LinkList heading="Classes" id="classes" linkList={additional.classes} />
+      <LinkList
+        heading="Interfaces"
+        id="interfaces"
+        linkList={additional.interfaces}
+      />
+      <LinkList heading="Mixins" id="mixins" linkList={additional.mixins} />
+      <LinkList
+        heading="Namespaces"
+        id="namespaces"
+        linkList={additional.namespaces}
+      />
       <Section data={additional.members} id="members" heading="Members" />
       <Section data={additional.methods} id="methods" heading="Methods" />
       <Section

@@ -1,4 +1,4 @@
-const path = require('jsdoc/path');
+const { nanoid } = require('nanoid');
 const showdown = require('showdown');
 const { taffy } = require('@jsdoc/salty');
 
@@ -73,7 +73,7 @@ function replaceUnbalanceClosedHTMLTagsWithHTMLEntity(anchorElement) {
 }
 
 function linkto(helper, name, linktext) {
-  const url = helper.linkto(name, linktext);
+  const url = helper.linkto(name, linktext).replace('.html', '');
   return replaceUnbalanceClosedHTMLTagsWithHTMLEntity(url);
 }
 
@@ -208,8 +208,9 @@ function addSignatureTypes(f, helper) {
 
 function addAttribs(f, helper) {
   const attribs = helper.getAttribs(f);
+  const attribsString = buildAttribsString(attribs, helper);
 
-  f.attribs = attribs;
+  f.attribs = `<span class="type-signature">${attribsString}</span>`;
 }
 
 function needsSignature({ kind, type, meta }) {
@@ -280,8 +281,8 @@ function getSectionWiseData(options) {
         const url = linkto(helper, item.longname, item.name);
 
         return {
-          name: item.name,
-          url,
+          id: nanoid(),
+          nameOrUrl: url,
           summary: item.summary,
         };
       });
@@ -361,23 +362,10 @@ function getSectionWiseData(options) {
 function convertNamesIntoNameURLMap(arr, helper) {
   if (!Array.isArray(arr)) return arr;
 
-  return arr.map((name) => {
-    let url = '';
-
-    if (/@link/.test(name)) {
-      url = getURLUsingHelperLinkto(name, helper);
-      if (url) {
-        name = url;
-      }
-    } else {
-      url = getURLUsingHelperLinkto(name, helper);
-    }
-
-    return {
-      name,
-      url,
-    };
-  });
+  return arr.map((name) => ({
+    id: nanoid(),
+    nameOrUrl: linkto(helper, name, name),
+  }));
 }
 
 module.exports = {

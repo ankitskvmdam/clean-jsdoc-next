@@ -21,7 +21,7 @@ export default function Section(props: SectionProps) {
     <div>
       <SectionHeading id={id}>{heading}</SectionHeading>
       {data.map((datum) => (
-        <div key={datum.id}>
+        <div key={datum.id} id={datum.id}>
           <Signature data={datum} />
           <div>{datum.summary}</div>
           <div>{datum.description}</div>

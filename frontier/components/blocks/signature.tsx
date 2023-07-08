@@ -13,6 +13,7 @@ export default function Signature(props: TSignatureProps) {
     data: { name, signature, kind, attribs },
   } = props;
 
+  console.log('Attrib', attribs);
   return (
     <Heading Component="h4" className="my-4">
       <span className={ptMono.className}>

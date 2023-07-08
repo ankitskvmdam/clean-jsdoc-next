@@ -11,19 +11,22 @@ export enum EKind {
   Event = 'event',
 }
 
-export type TNameURL = {
-  name: string;
-  url?: string;
+export type TURLObj = {
+  prefix: string;
+  suffix: string;
+  url: string;
+  linkText: string;
 };
 
 export type TParamsEntityType = {
-  names: TNameURL[];
+  names: string[];
 };
 
 export type TParamsEntity = {
   type: TParamsEntityType;
   description?: string;
   name?: string;
+  attrib?: string[];
 };
 
 export type TDocsMeta = {
@@ -44,13 +47,18 @@ export type TDocsCode = {
   value: string;
 };
 
+export type TNameOrUrl = {
+  id: string;
+  nameOrUrl: string;
+};
+
 export type TDocsDataData = {
   comment: string;
   meta: TDocsMeta;
   classdesc: string;
   alias: string;
   kind: EKind;
-  augments: TNameURL[];
+  augments: TNameOrUrl[];
   name: string;
   longname: string;
   scope: string;
@@ -58,16 +66,12 @@ export type TDocsDataData = {
   attribs: string;
   id: string;
   examples?: { caption: string; code: string; id: string }[];
-  signature: {
-    fn?: { name?: string; params: TParamsEntity[] };
-    returnTypes: string[];
-    attribs: string[];
-  };
+  signature: string[];
   ancestors: string[];
   hideconstructor?: boolean;
   summary?: string;
   description?: string;
-  see?: TNameURL[];
+  see?: TNameOrUrl[];
   version?: string;
   since?: string;
   todo?: string[];
@@ -77,7 +81,7 @@ export type TDocsDataData = {
   deprecated?: boolean;
   copyright?: string;
   defaultvalue?: string;
-  inherits?: string;
+  inherits?: TNameOrUrl[];
   override?: boolean;
   inherited?: boolean;
   implementations?: string[];
@@ -101,11 +105,15 @@ export type TEntityMetadata = {
   shortpath: string;
 };
 
+export type TDocsNameAndSummary = TNameOrUrl & {
+  summary: string;
+};
+
 export interface TDocsDataAdditionalData {
-  classes: TDocsDataData[];
-  interfaces: TDocsDataData[];
-  mixins: TDocsDataData[];
-  namespaces: TDocsDataData[];
+  classes: TDocsNameAndSummary[];
+  interfaces: TDocsNameAndSummary[];
+  mixins: TDocsNameAndSummary[];
+  namespaces: TDocsNameAndSummary[];
   members: TDocsDataData[];
   methods: TDocsDataData[];
   typedefs: TDocsDataData[];

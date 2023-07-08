@@ -1,6 +1,3 @@
-import React from 'react';
-import Link from 'next/link';
-
 import { type TParamsEntityType } from '@/types';
 
 export type TTypesProps = {
@@ -12,17 +9,17 @@ export default function Types(props: TTypesProps) {
     type: { names },
   } = props;
 
-  if (names.length === 0) return null;
-
-  return names.map((type) => {
-    if (type.url) {
-      return (
-        <Link key={type.url} href={type.url}>
-          {type.name}
-        </Link>
-      );
-    }
-
-    return <React.Fragment key={type.name}>{type.name}</React.Fragment>;
-  });
+  return names.map((name, idx) => (
+    <>
+      <div key={idx} className="inline-block">
+        {name}
+      </div>
+      {idx !== names.length - 1 && (
+        <>
+          <br />
+          |&nbsp;
+        </>
+      )}
+    </>
+  ));
 }

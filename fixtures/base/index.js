@@ -76,4 +76,3 @@ var Base = dcl(
 Base.compose = dcl;
 Base.mixin = dcl.mix;
 module.exports = Base;
-

@@ -12,7 +12,6 @@
  */
 
 const { writePageData } = require('../utils/file');
-const { attachLinkToParamsType } = require('../utils/helper');
 const { stringifyData } = require('../utils/html');
 const { getImportMap, getImportsString } = require('../utils/imports');
 
@@ -48,7 +47,6 @@ function buildDocsPage(data) {
 
   Object.values(otherSections).forEach((section) => {
     section.forEach((data) => {
-      attachLinkToParamsType(data.data.params, helper);
       const dataToWrite = getSectionPageString(data, helper);
       const url = helper.longnameToUrl[data.data.longname];
       writePageData(url, dataToWrite);

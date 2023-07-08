@@ -21,6 +21,7 @@ import SeeIcon from '@/icons/link-icon.svg';
 import TodoIcon from '@/icons/todo-icon.svg';
 
 import { EKind, type TDocsDataData } from '@/types';
+import LinkList from './link-list';
 
 export type TDetailsProps = {
   data: TDocsDataData;
@@ -73,7 +74,7 @@ export default function Details(props: TDetailsProps) {
 
         {inherits && inherited && !override && (
           <DetailsItem icon={<InheritanceIcon />} title="Inherited From">
-            {inherits}
+            <LinkList linkList={inherits} />
           </DetailsItem>
         )}
 
@@ -111,11 +112,7 @@ export default function Details(props: TDetailsProps) {
 
         {see && see.length > 0 && (
           <DetailsItem icon={<SeeIcon />} title="See">
-            {see.map((link) => (
-              <div key={link.name}>
-                <Link href={link.url || '#'}>{link.name}</Link>
-              </div>
-            ))}
+            <LinkList linkList={see} />
           </DetailsItem>
         )}
         {/* <DetailsItem icon={<TutorialIcon />} title="Tutorial" />
