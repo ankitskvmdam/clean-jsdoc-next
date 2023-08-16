@@ -7,7 +7,7 @@
  * @property {Array<Object>} interfaces
  * @property {Array<Object>} mixins
  * @property {*} globals
- * @property {*} tutorials
+ * @property {Array<Object>} tutorials
  *
  */
 
@@ -44,6 +44,11 @@ function buildDocsPage(data) {
   if (typeof sections !== 'object' || typeof helper !== 'object') return;
 
   const { globals, tutorials, ...otherSections } = sections;
+
+  /**
+   * We are building tutorials in ./tutorial.js and global in
+   * ./global.js
+   */
 
   Object.values(otherSections).forEach((section) => {
     section.forEach((data) => {

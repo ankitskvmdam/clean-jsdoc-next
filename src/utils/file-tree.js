@@ -1,5 +1,5 @@
 const { nanoid } = require('nanoid');
-const { linkto } = require('./helper');
+const { linkto, linkToTutorial } = require('./helper');
 
 /**
  * @typedef {Object} FileTree
@@ -69,13 +69,7 @@ function generateFileTreeUsingMembers({ members, helper }) {
     mixins: generateFileTreeForIndividualMember(mixins),
     modules: generateFileTreeForIndividualMember(modules),
     namespaces: generateFileTreeForIndividualMember(namespaces),
-    tutorials: generateFileTreeForIndividualMember(tutorials, (_, name) =>
-      helper.toTutorial(name, null, {
-        tag: 'em',
-        classname: 'disabled',
-        prefix: 'Tutorial:',
-      })
-    ),
+    tutorials: generateFileTreeForIndividualMember(tutorials, linkToTutorial),
   };
 }
 

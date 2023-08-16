@@ -5,7 +5,6 @@ const env = require('jsdoc/env');
 const getId = require('nanoid').nanoid;
 
 const {
-  hashToLink,
   getProcessedYield,
   addAttribs,
   addSignatureTypes,

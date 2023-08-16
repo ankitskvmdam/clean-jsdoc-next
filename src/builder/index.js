@@ -1,6 +1,7 @@
 const buildHomepage = require('./homepage');
 const buildDocsPage = require('./docs');
 const buildSourcePages = require('./source');
+const buildTutorials = require('./tutorials');
 const buildSidebar = require('./sidebar');
 
 /**
@@ -46,9 +47,10 @@ function builder(options) {
     });
   }
 
-  buildSidebar({ fileTree });
   buildHomepage({ opts, packageJson, files, indexUrl });
   buildDocsPage({ sections, helper });
+  buildTutorials({ sections, helper });
+  buildSidebar({ fileTree });
 }
 
 module.exports = builder;

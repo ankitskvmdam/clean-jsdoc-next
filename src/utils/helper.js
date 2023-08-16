@@ -376,6 +376,21 @@ function convertNamesIntoNameURLMap(arr, helper) {
   }));
 }
 
+function linkToTutorial(helper, name) {
+  /**
+   * @type {string}
+   */
+  const link = helper.toTutorial(name, null, {
+    tag: 'em',
+    classname: 'disabled',
+    prefix: 'Tutorial:',
+  });
+
+  if (typeof link !== 'string') return link;
+
+  return link.replace('.html', '');
+}
+
 module.exports = {
   hashToLink,
   getProcessedYield,
@@ -388,4 +403,5 @@ module.exports = {
   getURLUsingHelperLinkto,
   convertNamesIntoNameURLMap,
   linkto,
+  linkToTutorial,
 };
