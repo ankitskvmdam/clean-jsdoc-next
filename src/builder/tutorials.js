@@ -1,3 +1,7 @@
+const { writePageData } = require('../utils/file');
+const { replaceAnchorElementWithLinkElement } = require('../utils/html');
+const { getImportMap, getImportsString } = require('../utils/imports');
+
 /**
  * @typedef {Object} Tutorial
  * @property {string} longname
@@ -8,6 +12,29 @@
  * @property {string} children
  * @property {function} parse parse tutorial content.
  */
+
+/**
+ * @param {any} tutorialData
+ * @returns {string}
+ */
+function getTutorialPageString(tutorialData) {
+  const importMap = getImportMap();
+  const imports = [importMap.tutorialPage, importMap.link];
+
+  const { title, header, content } = tutorialData;
+
+  return `
+  ${getImportsString(imports)}
+
+  export default function Tutorial() {
+
+    return <TutorialPage title="${title}" header="${header}" content={\`${replaceAnchorElementWithLinkElement(
+    content
+  )}\`} />
+  }
+  `;
+}
+
 /**
  * @param {Tutorial} tutorial
  * @param {Object} helper
@@ -21,7 +48,10 @@ function buildTutorial(tutorial, helper) {
   const children = tutorial.children;
 
   const url = helper.tutorialToUrl(tutorial.name).replace('.html', '');
-  writeDataIntoFile;
+
+  const data = getTutorialPageString({ title, header, content, children });
+
+  writePageData(url, data);
 }
 
 /**

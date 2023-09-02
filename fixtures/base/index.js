@@ -11,7 +11,7 @@ var chains = require('./chains');
 
 /**
  * @classdesc The base of all classes in the system, this is
- *{@link https://google.com} <a href="google.com">google</a>
+ * <a href="https://google.com">google</a>
  * one of the few pure "classes" in core the of the system. It is a
  * pretty clean little class whose primary purpose is to surface the composition chains and a basis for storing
  * options on mixin and subclass instances. Options are handled at the instance rather than the prototype level

@@ -30,6 +30,11 @@ function getImportMap() {
       import: 'SourcePage',
       from: '@/components/page/source',
     },
+    tutorialPage: {
+      import: 'TutorialPage',
+      from: '@/components/page/tutorial',
+    },
+
     link: {
       import: 'Link',
       from: 'next/link',
